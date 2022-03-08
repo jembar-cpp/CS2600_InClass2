@@ -6,26 +6,8 @@
  * A 3x3 Lo Shu magic square contains the numbers 1 through 9 (non-repeating).
  * All columns, rows, and diagonals add up to the same number.
  * 
- * TODO:
- * function isMagicSquare:
- *  - checks if 2d array is a magic square or not, returns bool
- *  - check each column first
- *    - while checking each column, add values to 1d array and make sure they're all from 1 - 9 with no duplicates
- *  - check each row
- *  - check both diagonals
- *  - if at any point there's a repeating value, not in range 1 - 9, or rows/columns/diagonal don't add up to same number, return false
- *  - if everything is good, return true
- * 
- * main:
- *  - creates the 2d array, calls the function to test it
- * 
- * part 2:
- * function createSquare:
- *  - creates random square, prints it, and returns 2d array
- * 
- * main:
- *  - create square, check if it's magic, loop if not
- *  - count how many squares until it's magic
+ * The program scales for any size nxn square.
+ * After creating the program and testing, I found that there are likely no magic squares different than size 3x3.
  */
 
 #include <stdio.h>
@@ -107,9 +89,9 @@ bool isMagicSquare(int *square, int n) {
  * @param n: size of a side of the array
  */
 void printSquare(int *square, int n) {
-    for(int row = 0; row < 3; row++) {
+    for(int row = 0; row < n; row++) {
         printf("[%d",square[row*n]);
-        for(int col = 1; col < 3; col++) {
+        for(int col = 1; col < n; col++) {
             printf(" %d",square[row*n+col]);
         }
         printf("]\n");
@@ -134,7 +116,7 @@ int *generateRandomSquare(int n) {
 
     for(int i = 0; i < N_SQUARED; i++) { // loop until array is filled
         for(int j = 0; j < 1000; j++) { // generate a random number until it's unique
-            int random = rand() % 9 + 1; // generate random number from 1 to 9
+            int random = rand() % N_SQUARED + 1; // generate random number from 1 to 9
             if(numbers[random] == 0) { // number is unique
                 numbers[random] = 1;
                 numbers[i+N_SQUARED+1] = random;
@@ -147,17 +129,21 @@ int *generateRandomSquare(int n) {
 }
 
 int main() {
-    const int n = 3; // Hardcoded for 3x3 square
+    const int n = 3; // size of a side of the square
+    const int MAX_ITERATIONS = 0; // set maximum number of squares to generate (0 = infinite)
 
     srand(time(0)); // set random seed
-    int *square = generateRandomSquare(n);
-    printSquare(square, 3);
-    if(isMagicSquare(square, 3)) {
-        puts("The square is a magic square.");
+    int *square;
+    int numSquares = 0;
+    while(++numSquares && numSquares != MAX_ITERATIONS) {
+        square = generateRandomSquare(n);
+        if(isMagicSquare(square, n)) {
+            printf("Number of squares generated: %d\nMagic square:\n", numSquares);
+            printSquare(square, n);
+            break;
+        }
     }
-    else {
-        puts("The square is not a magic square.");
-    }
+
     free(square);
     return 0;
 }
