@@ -44,11 +44,9 @@
  * @return bool, whether the square is magic or not.
  */
 bool isMagicSquare(int *square, int n) {
+    const int N_SQUARED = n*n;
     int *numbers; // array to keep track of numbers
-    numbers = (int*)malloc((n+1) * sizeof(int)); // allocate memory for array
-    for(int i = 0; i <= n*n; i++) {
-        numbers[i] = 0; // initialize array of 0s
-    }
+    numbers = (int*)calloc((N_SQUARED+1), sizeof(int)); // allocate memory for array
 
     int sum = 0; // the sum for which all rows, columns, and diagonals should add up to
     
@@ -57,7 +55,7 @@ bool isMagicSquare(int *square, int n) {
         int currentSum = 0;
         for(int col = 0; col < n; col++) {
             int num = square[row*n+col];
-            if(num < 1 || num > n*n || numbers+num != 0) { // number is out of range or duplicate
+            if(num < 1 || num > N_SQUARED || numbers+num != 0) { // number is out of range or duplicate
                 numbers[num] = 1; // populate index in array
             }
             else { // not valid for a magic square
@@ -96,6 +94,7 @@ bool isMagicSquare(int *square, int n) {
         }
     }
 
+    free(numbers);
     return 1; // square is a magic square
 }
 
@@ -118,15 +117,42 @@ void printSquare(int *square, int n) {
     }
 }
 
-int main() { // Hardcoded for 3x3 square
-    int square[3][3] = {
-        {1, 2, 3},
-        {4, 5, 6},
-        {7, 8, 9}
-    };
+/**
+ * generateRandomSquare: generates a random square of size nxn
+ * Contains the numbers from 1 to n^2, non-duplicate
+ * 
+ * @param n: the size of the square 
+ * @return pointer to the first element of the square, a 1d array
+ */
+int *generateRandomSquare(int n) {
+    const int N_SQUARED = n*n;
 
-    printSquare(&square[0][0], 3);
-    if(isMagicSquare(&square[0][0], 3)) {
+    // Allocate and create array of two parts:
+    // Part 1 (0 - n^2): keeps track of duplicate numbers
+    // Part 2 (n^2 + 1 - 2*n^2): the square of numbers
+    int *numbers; // array to keep track of numbers
+    numbers = (int*)calloc(2*(n+1), sizeof(int)); // allocate memory for array
+
+    for(int i = 0; i < N_SQUARED; i++) { // loop until array is filled
+        for(int j = 0; j < 1000; j++) { // generate a random number until it's unique
+            int random = rand() % 9 + 1; // generate random number from 1 to 9
+            if(numbers[random] == 0) { // number is unique
+                numbers[random] = 1;
+                numbers[i+N_SQUARED+1] = random;
+                break;
+            }
+        }
+    }
+
+    return numbers+N_SQUARED+1; // return a pointer to the index of where the square starts
+}
+
+int main() { // Hardcoded for 3x3 square
+    srand(time(0)); // set random seed
+    int square[9] = {4, 9, 2, 3, 5, 7, 8, 1, 6};
+
+    printSquare(square, 3);
+    if(isMagicSquare(square, 3)) {
         puts("The square is a magic square.");
     }
     else {
