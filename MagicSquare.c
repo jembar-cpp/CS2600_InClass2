@@ -88,12 +88,11 @@ bool isMagicSquare(int *square, int n) {
     int diagSum2 = 0;
     for(int k = 0; k < n; k++) {
         diagSum1 += square[k*n+k];
-        diagSum2 += square[k*n+(k-n)];
-        if (diagSum1 != sum || diagSum2 != sum) { // diagonals aren't the same as the sum
-            return 0; // not a magic square
-        }
+        diagSum2 += square[k*n+(n-k-1)];
     }
-
+    if (diagSum1 != sum || diagSum2 != sum) { // diagonals aren't the same as the sum
+        return 0; // not a magic square
+    }
     free(numbers);
     return 1; // square is a magic square
 }
@@ -131,7 +130,7 @@ int *generateRandomSquare(int n) {
     // Part 1 (0 - n^2): keeps track of duplicate numbers
     // Part 2 (n^2 + 1 - 2*n^2): the square of numbers
     int *numbers; // array to keep track of numbers
-    numbers = (int*)calloc(2*(n+1), sizeof(int)); // allocate memory for array
+    numbers = (int*)calloc(2*(N_SQUARED+1), sizeof(int)); // allocate memory for array
 
     for(int i = 0; i < N_SQUARED; i++) { // loop until array is filled
         for(int j = 0; j < 1000; j++) { // generate a random number until it's unique
@@ -147,10 +146,11 @@ int *generateRandomSquare(int n) {
     return numbers+N_SQUARED+1; // return a pointer to the index of where the square starts
 }
 
-int main() { // Hardcoded for 3x3 square
-    srand(time(0)); // set random seed
-    int square[9] = {4, 9, 2, 3, 5, 7, 8, 1, 6};
+int main() {
+    const int n = 3; // Hardcoded for 3x3 square
 
+    srand(time(0)); // set random seed
+    int *square = generateRandomSquare(n);
     printSquare(square, 3);
     if(isMagicSquare(square, 3)) {
         puts("The square is a magic square.");
@@ -158,5 +158,6 @@ int main() { // Hardcoded for 3x3 square
     else {
         puts("The square is not a magic square.");
     }
+    free(square);
     return 0;
 }
