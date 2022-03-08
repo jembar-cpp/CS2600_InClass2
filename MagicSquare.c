@@ -27,3 +27,29 @@
  *  - create square, check if it's magic, loop if not
  *  - count how many squares until it's magic
  */
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <stdbool.h>
+
+void printSquare(int square[3][3]) {
+    for(int row = 0; row < 3; row++) {
+        printf("[%d",square[row][0]);
+        for(int col = 1; col < 3; col++) {
+            printf(" %d",square[row][col]);
+        }
+        printf("]\n");
+    }
+}
+
+int main() {
+    int square[3][3] = {
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 9}
+    };
+
+    printSquare(square);
+    return 0;
+}
