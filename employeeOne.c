@@ -29,7 +29,7 @@ PtrToEmployee searchEmployeeByName(PtrToConstEmployee ptr, int tableSize, char *
 }
 
 // Same functionality as searching by name, but searches by phone number instead
-PtrToEmployee searchEmployeeByPhone(PtrToConstEmployee ptr, int tableSize, char *pNum) {
+PtrToEmployee searchEmployeeByPhone(PtrToConstEmployee ptr, int tableSize, char * pNum) {
     const PtrToConstEmployee endPtr = ptr + tableSize;
     for(; ptr < endPtr; ptr++)
     { 
@@ -37,4 +37,15 @@ PtrToEmployee searchEmployeeByPhone(PtrToConstEmployee ptr, int tableSize, char 
             return (PtrToEmployee) ptr;
     } 
     return NULL;
+}
+
+// Same functionality as searching by number, but searches by salary instead
+PtrToEmployee searchEmployeeBySalary(PtrToConstEmployee ptr, int tableSize, double salary) {
+    const PtrToConstEmployee endPtr = ptr + tableSize;
+    for(; ptr < endPtr; ptr++)  //search until end of table  ptr++ will increment by what??
+    {
+        if(ptr->salary == salary) //check if it equals the Employee number
+            return (PtrToEmployee) ptr; //return location of the number to callee.
+    }
+     return NULL;   //this will only happen if no Employee number matches in loop above
 }
